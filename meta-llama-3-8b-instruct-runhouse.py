@@ -24,7 +24,7 @@ class HFChatModel(rh.Module):
         messages = [
             {
                 "role": "system",
-                "content": "You are a pirate chatbot who always responds in pirate speak!",
+                "content": "You are an ai designed to answer questions about technology",
             },
             {"role": "user", "content": prompt_text},
         ]
@@ -49,10 +49,11 @@ class HFChatModel(rh.Module):
         return outputs[0]["generated_text"][len(prompt) :]
 
 if __name__ == "__main__":
+
     # Create a cluster with the desired instance type and provider
     gpu = rh.cluster(
-        name="rh-a10x", instance_type="A10G:1", memory="32+", provider="aws",
-        region="us-west-2", ssh_creds={"ssh_user": "ubuntu", "ssh_private_key": "~/.ssh/"}
+        name="rh-a10x", instance_type="A10G:1", memory="32+", provider="aws", 
+        ssh_creds={"ssh_user": "ubuntu", "ssh_private_key": "/root/.ssh/sky-key"}, region="us-west-2",
     ).up_if_not()
 
     # Define the environment for our module
