@@ -1,6 +1,5 @@
-import torch
-
 from transformers import LlamaForCausalLM, PreTrainedTokenizerFast
+import torch
 
 # Define paths
 tokenizer_path = 'meta-llama/Meta-Llama-3-8B-Instruct/original'
@@ -14,27 +13,6 @@ model = LlamaForCausalLM.from_pretrained(tokenizer_path, device_map='auto', torc
 # Ensure model is in evaluation mode
 model.eval()
 
-#def generate_text(prompt):
-#    inputs = tokenizer(prompt, return_tensors='pt').to('cuda')
-#    with torch.no_grad():
-#        outputs = model.generate(inputs.input_ids, max_length=528, num_return_sequences=1)
-#    return tokenizer.decode(outputs[0], skip_special_tokens=True)
-#
-#print("Enter your prompt:")
-#
-#while True:
-#    try:
-#        # Read from standard input
-#        prompt = input()
-#
-#        # Generate the output using the model
-#        output = generate_text(prompt)
-#
-#        # Print the output to standard output
-#        print(output)
-#    except EOFError:
-#        break
-
 # Define the function to generate a response
 def generate_response(input_text):
     inputs = tokenizer(input_text, return_tensors='pt').to('cuda')
@@ -43,11 +21,13 @@ def generate_response(input_text):
     response = tokenizer.decode(outputs[0], skip_special_tokens=True)
     return response
 
-# Start the interactive loop
+# Start the interactive loop with an initial prompt
+
 print("Enter 'quit' to stop the conversation.")
 while True:
-    user_input = input("You: ")
+    user_input = input()
     if user_input.lower() == 'quit':
         break
-    response = generate_response(user_input)
+    context = f"<|begin_of_text|><|start_header_id|>system<|end_header_id|>You are Llama, an advanced AI designed to answer questions and provide information succinctly on a wide range of topics. Your responses should be clear, concise, and directly address the user's queries. Avoid answering in weird formats like multiple choice or lists unless explicitly asked. Maintain a serious and practical tone in your answers. Do not use sarcasm, humor, cuteness, or irreverence in your responses.<|eot_id|><|start_header_id|>user<|end_header_id|>{user_input}<|eot_id|><|start_header_id|>assistant<|end_header_id|>"
+    response = generate_response(context)
     print(f"Llama: {response}")
